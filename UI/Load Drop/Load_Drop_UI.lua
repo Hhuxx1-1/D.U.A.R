@@ -265,7 +265,7 @@ function UI.LoadIndexItem(playerid,ix)
     _e("text_level",104):setText(current_Char_level > 0 and (" Lv. "..current_Char_level) or "Locked");
     _e("text_upgrade",55):setText(current_Char_level > 0 and (" UPGRADE > "..(current_Char_level+1)) or "UNLOCK");
     _e("text_start",59):setText(current_Char_level > 0 and "START" or "Get Free");
-    _e("pic_start",58):setTexture(current_Char_level > 0 and [[8_1029380338_1747158729]] or [[8_1029380338_1723033408]]);
+    _e("pic_start",58):setTexture(current_Char_level > 0 and [[8_1029380338_1747158729]] or [[8_1029380338_1748931797]]);
 
     local price_next_level = current_Char_level > 0 and (d.cost.value + (d.cost.value * current_Char_level * d.cost.grow)) or (d.unlockCost.value);
     _e("text_upgrade_price",56):setText(formatText(price_next_level));

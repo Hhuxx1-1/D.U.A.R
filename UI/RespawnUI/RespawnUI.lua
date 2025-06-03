@@ -9,20 +9,32 @@ local function updateKillFeed()
         -- Get only the last 5 messages from the killfeed
         local total = #BATTLE_DATA.KILLFEED
         local start = math.max(1, total - 4)
-        local recentMessages = {}
+        local killfeed = {}
         for i = start, total do
-            table.insert(recentMessages, BATTLE_DATA.KILLFEED[i])
+            table.insert(killfeed, BATTLE_DATA.KILLFEED[i])
         end
-        local killfeedMSG = table.concat(recentMessages, "\n")
-
+        -- print("Killfeed : ",killfeed,BATTLE_DATA.KILLFEED);
+        -- local killfeedMSG = table.concat(recentMessages, "\n") killfeed is no longer Just a message;
+        -- it is now table {victimName = victimName , killerName = attackerName , weaponName = killer.weapon , weaponIcon = killer.weaponIcon};
         -- Timestamp this update
         lastUpdateKillFeed = os.time()
-        local delay = 7
+        local delay = 9
 
         -- Update the UI for all players
         for _, player in ipairs(players) do
             local kfUI = UIZ(killFeedUI, player)
-            kfUI("text", 1):setText(killfeedMSG)
+            -- kfUI("text", 1):setText(killfeedMSG)-- we nolonger just displayed it on single text;
+            -- itereate through available slot;
+            for slot = 1 , 5 do 
+                if killfeed[slot] then 
+                    kfUI("base"..slot,32 + ((slot - 1) * 4)):show()
+                    kfUI("picWeapon"..slot,32 + ((slot - 1) * 4) + 1):setTexture(tostring(killfeed[slot].weaponIcon));
+                    kfUI("txtAttacker"..slot,32 + ((slot - 1) * 4) + 2):setText(killfeed[slot].killerName or "Unknown");
+                    kfUI("txtVictim"..slot,32 + ((slot - 1) * 4) + 3):setText(killfeed[slot].victimName or "Unknown");
+                else  
+                    kfUI("base"..slot,32 + ((slot - 1 ) * 4 )):hide()
+                end 
+            end 
             kfUI()
         end
 
@@ -30,11 +42,15 @@ local function updateKillFeed()
         threadpool:delay(delay, function()
             if os.time() - lastUpdateKillFeed >= delay then
                 for _, player in ipairs(players) do
+            -- itereate through available slot;
                     local kfUI = UIZ(killFeedUI, player)
-                    kfUI("text", 1):setText("")
-                    kfUI()
+                    for slot = 1 , 5 do 
+                            kfUI("base"..slot,32 + ((slot - 1 ) * 4 )):hide()
+                    end 
+                    kfUI();
                 end
             end
+            BATTLE_DATA.KILLFEED = {} -- reset the kill Feed;
         end)
     end
 end
@@ -118,21 +134,21 @@ ScriptSupportEvent:registerEvent("UI.Show",function(e)
                 return math.atan2(det, dot) * (180 / math.pi)
             end
 
-            local function cameraFollow(t)
+            local function cameraFollow(t,target,playerid)
                 
                 if isOnRes[playerid] and t <= 20 then 
-                    threadpool:delay(0.3,function()
+                    threadpool:delay(0.5,function()
                         -- Player:SetCameraMountObj(playerid, killer.attacker);
-                        local r, _x, _y, _z = Player:getPosition(killer.attacker);
+                        local r, _x, _y, _z = Player:getPosition(target);
                         -- Player:SetCameraMountPos(playerid, {x=_x,y=_y+3,z=_z});
                         local yaw = getAngleDiff(playerid,{x=_x,y=_y,z=_z});
                         -- Apply the absolute rotation to make player face the target
-                        Player:SetCameraRotTransformBy(playerid, {x = yaw, y = 0}, 1, 0.3)
-                        cameraFollow(t+1);
+                        Player:SetCameraRotTransformBy(playerid, {x = yaw, y = 4}, 1, 0.4);
+                        cameraFollow(t+1,target,playerid);
                     end)
                 end
             end 
-            cameraFollow(1);
+            cameraFollow(1,killer.attacker,playerid);
 
             -- print("BATTLE_DATA : ",BATTLE_DATA);
             

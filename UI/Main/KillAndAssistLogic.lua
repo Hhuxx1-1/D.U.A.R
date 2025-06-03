@@ -34,12 +34,14 @@ local function recordDamage(e)
     -- Get weapon name from equipment system
     local r,currentEquip =  BACKPACK.getActualId(e.eventobjid)
     local weaponName = r == true and currentEquip.name or "Unknown Weapon";
+    local weaponIcon = r == true and currentEquip.iconid or [[8_1029380338_1711289202]];
     
     -- Store damage dealt (attacker perspective)
     table.insert(BATTLE_DATA.players[e.eventobjid].damageDealt, {
         victim = e.toobjid,
         damage = e.hurtlv or e.CurEventParam.Hurtlv or 0,
         weapon = weaponName,
+        weaponIcon = weaponIcon,
         timestamp = os.time()
     })
     
@@ -48,6 +50,7 @@ local function recordDamage(e)
         attacker = e.eventobjid,
         damage = e.hurtlv or e.CurEventParam.Hurtlv or 0,
         weapon = weaponName,
+        weaponIcon = weaponIcon,
         timestamp = os.time()
     })
 end
@@ -87,7 +90,7 @@ local function getDeathRecap(playerid)
 
     -- add into killFeed
     local victimName = PLAYER_READY.PLAYERS[playerid] ~= nil and PLAYER_READY.PLAYERS[playerid].name or playerid;
-    table.insert(BATTLE_DATA.KILLFEED,string.format("%s Kill %s with %s ",attackerName,victimName,killer.weapon));
+    table.insert(BATTLE_DATA.KILLFEED,{victimName = victimName , killerName = attackerName , weaponName = killer.weapon , weaponIcon = killer.weaponIcon});
 
     return msg
 end

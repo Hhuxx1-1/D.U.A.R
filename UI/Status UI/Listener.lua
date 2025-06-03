@@ -16,9 +16,9 @@ local function UpdateStamina(currentStamina,MaxStamina,playerid)
     local height = 60;
     local percentage = currentStamina/MaxStamina;
 
-    if currentStamina > 0 then 
-        setArmor(playerid,math.min(currentStamina+1,50))
-    end 
+    -- if currentStamina > 0 then 
+        setArmor(playerid,math.min(currentStamina+1,80))
+    -- end 
 
     local w = length * percentage;
     if Customui:SmoothScaleTo(playerid, uiid, Element_staminaMain, 0.1, w , height) == 0 then 
@@ -80,7 +80,7 @@ ScriptSupportEvent:registerEvent([[Player.BeHurt]],function(e)
     local _,maxStamina = Player:getAttr(playerid,29);
     local _,currentHP = Player:getAttr(playerid,2);
     local _,maxHP = Player:getAttr(playerid,1);
-        Chat:sendSystemMsg("PLAYER : "..playerid.." Hurt DMG : "..dmg.." HP : "..currentHP.." maxHP : "..maxHP.." Stamina : "..currentStamina.." maxStamina : "..maxStamina);
+        -- Chat:sendSystemMsg("PLAYER : "..playerid.." Hurt DMG : "..dmg.." HP : "..currentHP.." maxHP : "..maxHP.." Stamina : "..currentStamina.." maxStamina : "..maxStamina);
     if currentStamina >  maxStamina/2 then 
         -- substract it;
         local r,armor = Player:getAttr(playerid,19)

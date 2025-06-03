@@ -1,5 +1,5 @@
 LEADERBOARD = {
-    data = {} , name = "DUAR_RANK_1" , reqtime = 5, reqCooldown = 120
+    data = {} , name = "DUAR_RANK_1" , reqtime = 60, reqCooldown = 120 , currentSecond = 0
 };
 
 -- ================= UI =====================
@@ -29,7 +29,7 @@ local function setActionBtn(playerid,btn,func)
 end
 
 --============ Leaderboard ===========
-function LEADERBOARD:insert(i, v)
+function LEADERBOARD:Add(i, v)
     -- make sure the index is number;
     if i ~= nil then
         self.data[tonumber(i)] = v
@@ -47,21 +47,24 @@ end
 
 function LEADERBOARD:loadServerData (n,t)
     local callback = function (ret, list)
+        print(ret,"List : ",list)
         -- convert ret into boolean if it was number;
         if type(ret) == "number" then if ret == 0 then ret = true else ret = false end end;
 
         if ret and list then
             self:clear();
-            for ix, v in pairs(list) do
-                self.insert(ix, v)
+            for ix, v in ipairs(list) do
+                self:Add(ix, v)
             end
         end
     end
     local ret = CloudSever:getOrderDataIndexArea(self.name, -1 * n, callback);
     if ret ~= ErrorCode.OK then
         self.reqtime = t + self.reqCooldown*10;
+        print("Failed to Get "..self.name);
     else 
         self.reqtime = t + self.reqCooldown;
+        print("Succeed to Get "..self.name);
     end
 end
 
@@ -71,7 +74,7 @@ function LEADERBOARD:displayForUI(playerid,page)
     local startIndex = (page-1)*itemPerPage + 1; local endIndex = page * itemPerPage ;
     local c = 1;
 
-    if #self.data <= 0 then 
+    if isEmptyTable(self.data) then 
         -- handle for empty data to display;
         Customui:showElement(playerid,UI,UI.."_"..EmptyDisplay);
         Customui:hideElement(playerid,UI,UI.."_"..MainDisplay);
@@ -92,7 +95,7 @@ function LEADERBOARD:displayForUI(playerid,page)
                 Customui:setText(playerid,UI,UI.."_"..List[c].num,i);
                 Customui:setText(playerid,UI,UI.."_"..List[c].name,playerName);
                 Customui:setText(playerid,UI,UI.."_"..List[c].uid,"UID:"..playeruid);
-                Customui:setText(playerid,UI,UI.."_"..List[c].valevel,"Level "..a.v);
+                Customui:setText(playerid,UI,UI.."_"..List[c].valevel,a.v.." Kills");
             else 
                 -- the index is not exist;
                 -- clean the slot or hide it.
@@ -133,49 +136,20 @@ function LEADERBOARD:displayForUI(playerid,page)
             -- Try Load from Top;
             for i,a in ipairs(self.data) do 
                 if a then 
-                    if a.k == playerid_ then
+                    if tonumber(a.k) == playerid_ then
                         a.n = i; --store the index into n; 
                         return true,a;
                     end 
                 end 
+            end
+            --  try load directly from current kill;
+            local INFO = PLAYERDATA(TABLE_TYPE.string,"INFO",playerid_);
+            local current_Kill = INFO:readIndex(4); --number
+            if current_Kill then
+                return true,{k = playerid_ , n = #self.data+1 , v = current_Kill};
             end 
-            local result_fromcallback = {}
-            -- if not exist then try Obtain by Key
-            local callback = function (ret,k,v,ix)
-                -- ret could return 2 type which is either number or boolean;
-                -- convert into boolean if number;
-                if type(ret) == "number" then if ret == ErrorCode.OK then ret = true else ret = false end end
 
-                if ret then 
-                    if ix then
-                        local ranking = ix;
-                        -- print('返回数据成功 键= '..k..' 值='..v..' 排名='..ix )
-                        -- at this scenario the Ranking for player is Exist;
-                        result_fromcallback = {k = k, v = v, n = ix};
-                    else
-                        -- print('返回数据成功 键= '..k..' 值='..v)
-                        -- at this scenario the Ranking for Player is Not Exist;
-                        result_fromcallback = {k = k, v = v};
-                    end
-                else
-                    --Failed to obtain by Key;
-                    result_fromcallback = {k = playerid_, v = "Not Recorded Yet"};
-                end
-
-                -- get the Player Nickname;
-                local r,name =Player:getNickname(playerid_)
-                if r == 0 and name then 
-                    result_fromcallback.nick = name;
-                end 
-            end
-
-            local ret = CloudSever:getOrderDataByKeyEx(LEADERBOARD.name,playerid_,callback)
-
-            if ret == ErrorCode.OK then
-                return true,result_fromcallback;
-            else
-                return false;
-            end
+            return false,nil;
         end 
 
         local tryLoad,LoadedData = loadForSelf(playerid)
@@ -184,7 +158,7 @@ function LEADERBOARD:displayForUI(playerid,page)
             Customui:setText(playerid,UI,UI.."_"..YouSlot.num,"You\n"..LoadedData.n or " ??? ");
             Customui:setText(playerid,UI,UI.."_"..YouSlot.name,LoadedData.nick or " Loading ");
             Customui:setText(playerid,UI,UI.."_"..YouSlot.uid,"UID:"..LoadedData.k);
-            Customui:setText(playerid,UI,UI.."_"..YouSlot.valevel,""..LoadedData.v.."Kill" or " ???. ");
+            Customui:setText(playerid,UI,UI.."_"..YouSlot.valevel,LoadedData.v .. "Kill" or " ??? Kill ");
         else 
             Customui:setText(playerid,UI,UI.."_"..YouSlot.num,LoadedData.n);
             Customui:setText(playerid,UI,UI.."_"..YouSlot.name,"Loading...");
@@ -192,31 +166,67 @@ function LEADERBOARD:displayForUI(playerid,page)
             Customui:setText(playerid,UI,UI.."_"..YouSlot.valevel,"-");
         end 
     end 
+
+    -- === Show Room info ; 
+    local roominfo = " Room Info :";
+    if  World.getServerDateString then 
+        local code,date = World:getServerDateString();
+        if code == 0 then roominfo = roominfo .. "\n Date : "..date; end 
+    end 
+    if CloudSever.GetRoomID ~= nil then 
+        local ret ,roomid = CloudSever:GetRoomID();
+        if ret == 0 then roominfo = roominfo .."\n RoomID : "..roomid; end 
+    end 
+    if CloudSever.GetRoomCategory ~= nil then 
+        local code ,msg = CloudSever:GetRoomCategory()
+        if code == 0 then roominfo = roominfo .."\n Category : "..msg; end 
+    end 
+    if Player.getHostUin then 
+        local code, host = Player:getHostUin()
+        if code == 0 then roominfo = roominfo .."\n Host : "..host; end 
+    end 
+    if Player.getMainPlayerUin then 
+        local code, mainPlayer = Player:getMainPlayerUin()
+        if code == 0 then roominfo = roominfo .."\n MainPlayer : "..mainPlayer end 
+    end 
+    if  LEADERBOARD.currentSecond then 
+        roominfo = roominfo .."\n Elapsed Second "..LEADERBOARD.currentSecond.."s";
+        roominfo = roominfo .."\n Next Update in "..(LEADERBOARD.reqtime - LEADERBOARD.currentSecond) .."s";
+    end 
+
+    Customui:setText(playerid,UI,UI.."_63",roominfo);
 end
 
 function LEADERBOARD:recordForAllPlayer()
     -- get All player ready in the Room;
-    for _,player in ipairs(PLAYER_READY.PLAYERS) do 
-        local v = BATTLE_DATA.players[player].kills
+    for _,player in pairs(PLAYER_READY.PLAYERS) do 
+        local INFO = PLAYERDATA(TABLE_TYPE.string,"INFO",player.id);
+        local v = tonumber(INFO:readIndex(4));
+        if v > 0 then 
         -- insert into Leaderboard;
-        local ret = CloudSever:setOrderDataBykey(self.name,player.id,v);
+            local ret = CloudSever:setOrderDataBykey(self.name,player.id,v);
+            print(ret == 0 and "Player "..player.name.." Data Recorded Successfully" or "Error recording Player "..player.name.." Data");
+        else 
+            Chat:sendSystemMsg("Get Some Kills to get Into Leaderboard",player.id);
+        end 
     end 
 end
 
 ScriptSupportEvent:registerEvent("Game.RunTime",function(e)
     if e.second then 
         if e.second == LEADERBOARD.reqtime - 2 then
-            -- Chat:sendSystemMsg("Updating Leaderboard...");
+            Chat:sendSystemMsg("#Y[System]#W Updating Leaderboard...");
             local r,err = pcall(LEADERBOARD.recordForAllPlayer,LEADERBOARD);
             -- LEADERBOARD:recordForAllPlayer()
             if not r then print(err) end;
         end 
         if e.second == LEADERBOARD.reqtime then
-            -- Chat:sendSystemMsg("Leaderboard Updated...");
+            Chat:sendSystemMsg("#Y[System]#W Leaderboard Updated");
             local r,err = pcall(LEADERBOARD.loadServerData,LEADERBOARD,50,e.second)
             -- LEADERBOARD:loadServerData(50, e.second);
             if not r then print(err) end;
         end 
+        LEADERBOARD.currentSecond = e.second;
     end 
 end)
 
@@ -225,7 +235,8 @@ ScriptSupportEvent:registerEvent("UI.Show", function(e)
     local playerid = e.eventobjid
     local ui = e.CustomUI
     if ui == UI then
-        pcall(function() LEADERBOARD:displayForUI(playerid,1) end)
+        local r, err = pcall(function() LEADERBOARD:displayForUI(playerid,1) end)
+        if not r then print(err) end 
     end
 end)
 
@@ -255,7 +266,7 @@ ScriptSupportEvent:registerEvent("UI.Button.Click",function(e)
                 end 
             else 
                 -- not a function 
-                f_H:SendMessage(playerid,"Action Invalid");
+                Player:notifyGameInfo2Self(playerid,"Action Invalid");
             end 
         end
     else
@@ -270,10 +281,10 @@ ScriptSupportEvent:registerEvent("UI.Button.Click",function(e)
                 end 
             else 
                 -- not a function 
-                f_H:SendMessage(playerid,"Action Invalid");
+                Player:notifyGameInfo2Self(playerid,"Action Invalid");
             end 
         else
-            f_H:SendMessage(playerid,"Action Invalid: unset");
+            Player:notifyGameInfo2Self(playerid,"Action Invalid: unset");
         end 
     end 
 end)

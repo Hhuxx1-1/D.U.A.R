@@ -24,7 +24,11 @@ local error = MISSILE:REGISTER(12298)
     end)
 end)
 :SET_HIT(function(e)
-    print(Actor:getActorFacade(e.eventobjid));
+    local r, stringModel = Actor:getActorFacade(e.eventobjid);
+    -- string model should start with either Block or block; 
+    if stringModel:sub(1, 5) ~= "Block" or stringModel:sub(1, 5) ~= "block" then
+        Actor:killSelf(e.eventobjid);
+    end 
 end)
 ;
 -- Normal Bullet;
