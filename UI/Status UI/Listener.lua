@@ -80,14 +80,14 @@ ScriptSupportEvent:registerEvent([[Player.BeHurt]],function(e)
     local _,maxStamina = Player:getAttr(playerid,29);
     local _,currentHP = Player:getAttr(playerid,2);
     local _,maxHP = Player:getAttr(playerid,1);
-
+        Chat:sendSystemMsg("PLAYER : "..playerid.." Hurt DMG : "..dmg.." HP : "..currentHP.." maxHP : "..maxHP.." Stamina : "..currentStamina.." maxStamina : "..maxStamina);
     if currentStamina >  maxStamina/2 then 
         -- substract it;
         local r,armor = Player:getAttr(playerid,19)
         Player:setAttr(playerid,28,math.max(currentStamina + (dmg - armor) ,0));
         Player:setAttr(playerid,2,math.min(currentHP - dmg/10,maxHP))
         Actor:addBuff(playerid,50000002, 1, 20);
-    elseif currentStamina >  maxStamina/10 then 
+    elseif currentStamina >  1 then 
 
         Player:setAttr(playerid,28,math.max(currentStamina + dmg, 0));
         Player:setAttr(playerid,2,math.min(currentHP - dmg/2,maxHP))

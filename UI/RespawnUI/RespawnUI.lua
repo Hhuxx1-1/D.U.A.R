@@ -101,12 +101,33 @@ ScriptSupportEvent:registerEvent("UI.Show",function(e)
                     diamond:gain(5,"Kill Player"..playerid);
                 end 
             end
+
+            local function getAngleDiff(playerid, target)
+                local _,px, py, pz = Actor:getPosition(playerid) 
+                local _,dx, dy, dz = Player:getAimPos(playerid)
+                local dirX1, dirZ1 = (dx - px)*10, (dz - pz)*10;
+                local tx,ty,tz   = target.x,target.y,target.z; 
+                local mag1 = math.sqrt(dirX1^2 + dirZ1^2)
+                dirX1, dirZ1 = dirX1 / mag1, dirZ1 / mag1 
+
+                local carX,carZ = (tx - px), (tz - pz);
+                local mag2 = math.sqrt(carX^2 + carZ^2);
+                carX, carZ = carX / mag2, carZ / mag2 
+                local dot, det = carX * dirX1 + carZ * dirZ1, carX * dirZ1 - carZ * dirX1
+
+                return math.atan2(det, dot) * (180 / math.pi)
+            end
+
             local function cameraFollow(t)
+                
                 if isOnRes[playerid] and t <= 20 then 
                     threadpool:delay(0.3,function()
                         -- Player:SetCameraMountObj(playerid, killer.attacker);
                         local r, _x, _y, _z = Player:getPosition(killer.attacker);
-                        Player:SetCameraMountPos(playerid, {x=_x,y=_y+3,z=_z});
+                        -- Player:SetCameraMountPos(playerid, {x=_x,y=_y+3,z=_z});
+                        local yaw = getAngleDiff(playerid,{x=_x,y=_y,z=_z});
+                        -- Apply the absolute rotation to make player face the target
+                        Player:SetCameraRotTransformBy(playerid, {x = yaw, y = 0}, 1, 0.3)
                         cameraFollow(t+1);
                     end)
                 end
