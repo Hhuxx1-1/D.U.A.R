@@ -284,6 +284,8 @@ function UI.LoadIndexItem(playerid,ix)
             if coins:spend(price,"Upgrade Character "..d.name.." to level "..(current_Char_level+1)) then
                 -- upgrade the saved data;
                 UpgradeLevelChar(playerid,ix,current_Char_level);
+                Player:notifyGameInfo2Self(playerid,"Upgraded "..d.name.." to level "..(current_Char_level+1));
+                Actor:addBuff(playerid,50000004,1, 40);
                 UI.LoadIndexItem(playerid,ix)
             else
                 Player:notifyGameInfo2Self(playerid,"Not Enough "..d.cost.currency)
@@ -300,6 +302,8 @@ function UI.LoadIndexItem(playerid,ix)
             if coins:spend(price,"Unlock Character "..d.name.." to level "..(current_Char_level+1)) then
                 -- upgrade the saved data;
                 UpgradeLevelChar(playerid,ix,current_Char_level);
+                Player:notifyGameInfo2Self(playerid,"Unlocked "..d.name);
+                Actor:addBuff(playerid,50000004,1, 40);
                 UI.LoadIndexItem(playerid,ix)
             else
                 Player:notifyGameInfo2Self(playerid,"Not Enough "..d.cost.currency)
@@ -307,10 +311,19 @@ function UI.LoadIndexItem(playerid,ix)
         end)
     end 
 
-    UI.updatePagination(_e,ix,current_page[playerid],playerid)
+    UI.updatePagination(_e,ix,current_page[playerid],playerid);
+
+    -- update the money display;
+    -- Update for Coin
+    local coins = CURRENCY("Coins", playerid)
+    _e("Text_Value_Coins", 113):setText(formatText(coins:balance()));
+
+    local diamonds = CURRENCY("Diamonds", playerid)
+    _e("Text_Value_Coins", 118):setText(formatText(diamonds:balance()));
 
     char:destroy();
     _e();
+
 end 
 
 ScriptSupportEvent:registerEvent("UI.Show",function(e)

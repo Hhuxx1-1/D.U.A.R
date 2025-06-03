@@ -17,7 +17,7 @@ local function updateKillFeed()
 
         -- Timestamp this update
         lastUpdateKillFeed = os.time()
-        local delay = 6
+        local delay = 7
 
         -- Update the UI for all players
         for _, player in ipairs(players) do
@@ -83,14 +83,26 @@ ScriptSupportEvent:registerEvent("UI.Show",function(e)
             if killer then
                 BATTLE_DATA.players[killer.attacker].kills = 
                     BATTLE_DATA.players[killer.attacker].kills + 1;
+                local INFO = PLAYERDATA(TABLE_TYPE.string,"INFO",killer.attacker);
+                local current_Kill = INFO:readIndex(4);
+                INFO:updateIndex(4,current_Kill+1);
+                INFO:destroy();
                 -- update the killfeed text;
-                updateKillFeed()
+                updateKillFeed();
+                if playerid ~= killer.attacker then 
+                -- make sure it is other player killed;
+                -- add coin for killer;
+                    local coins = CURRENCY("Coins",killer.attacker);
+                    coins:gain(1000,"Kill Player"..playerid);
+                    local diamond = CURRENCY("Diamonds",killer.attacker);
+                    diamond:gain(5,"Kill Player"..playerid);
+                end 
             end
             threadpool:delay(1,function(e)
                  Player:SetCameraMountObj(playerid, killer.attacker);
             end)
 
-            print("BATTLE_DATA : ",BATTLE_DATA);
+            -- print("BATTLE_DATA : ",BATTLE_DATA);
             
             -- Clear victim's data for respawn
             BATTLE_DATA:Clear(playerid)

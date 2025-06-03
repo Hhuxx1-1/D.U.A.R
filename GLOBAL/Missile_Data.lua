@@ -156,3 +156,20 @@ end)
     end)
 end)
 ;
+
+-- Shotgun Bullet ;
+local error = MISSILE:REGISTER(4112)
+:SET_HIT(function(e)
+    local r,posX,posY,posZ = Actor:getPosition(e.eventobjid);
+    MISSILE.f.ExplodeByRadius(posX,posY,posZ, 4.5, 600, 45, 1009, 10660, e.helperobjid);
+end)
+:SET_CREATE(function(e)
+    threadpool:delay(0.4,function()
+        local r,posX,posY,posZ = Actor:getPosition(e.toobjid);
+        threadpool:delay(0.1,function()
+            MISSILE.f.ExplodeByRadius(posX,posY,posZ, 5, 600, 45, 1009, 10660, e.helperobjid);
+        end)
+        Actor:killSelf(e.toobjid);
+    end)
+end)
+;
