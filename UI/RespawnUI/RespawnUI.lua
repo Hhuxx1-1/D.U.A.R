@@ -118,37 +118,52 @@ ScriptSupportEvent:registerEvent("UI.Show",function(e)
                 end 
             end
 
+            -- Calculate yaw (horizontal) and pitch (vertical) angle difference
             local function getAngleDiff(playerid, target)
-                local _,px, py, pz = Actor:getPosition(playerid) 
-                local _,dx, dy, dz = Player:getAimPos(playerid)
-                local dirX1, dirZ1 = (dx - px)*10, (dz - pz)*10;
-                local tx,ty,tz   = target.x,target.y,target.z; 
-                local mag1 = math.sqrt(dirX1^2 + dirZ1^2)
-                dirX1, dirZ1 = dirX1 / mag1, dirZ1 / mag1 
+                local _, px, py, pz = Actor:getPosition(playerid)
+                local _, dx, dy, dz = Player:getAimPos(playerid)
+                local tx, ty, tz = target.x, target.y, target.z
 
-                local carX,carZ = (tx - px), (tz - pz);
-                local mag2 = math.sqrt(carX^2 + carZ^2);
-                carX, carZ = carX / mag2, carZ / mag2 
-                local dot, det = carX * dirX1 + carZ * dirZ1, carX * dirZ1 - carZ * dirX1
+                -- Vector from player to aim direction
+                local dirX, dirZ = dx - px, dz - pz
+                local aimMag = math.sqrt(dirX^2 + dirZ^2)
+                dirX, dirZ = dirX / aimMag, dirZ / aimMag
 
-                return math.atan2(det, dot) * (180 / math.pi)
+                -- Vector from player to target
+                local toTargetX, toTargetZ = tx - px, tz - pz
+                local targetMag = math.sqrt(toTargetX^2 + toTargetZ^2)
+                toTargetX, toTargetZ = toTargetX / targetMag, toTargetZ / targetMag
+
+                -- Yaw
+                local dot = toTargetX * dirX + toTargetZ * dirZ
+                local det = toTargetX * dirZ - toTargetZ * dirX
+                local yaw = math.atan2(det, dot) * (180 / math.pi)
+
+                -- Pitch: vertical angle between player and target
+                local dy = ty - py
+                local dz = math.sqrt((tx - px)^2 + (tz - pz)^2)
+                local pitch = math.atan2(dy, dz) * (180 / math.pi)
+
+                return yaw, pitch
             end
 
-            local function cameraFollow(t,target,playerid)
-                
-                if isOnRes[playerid] and t <= 20 then 
-                    threadpool:delay(0.5,function()
-                        -- Player:SetCameraMountObj(playerid, killer.attacker);
-                        local r, _x, _y, _z = Player:getPosition(target);
-                        -- Player:SetCameraMountPos(playerid, {x=_x,y=_y+3,z=_z});
-                        local yaw = getAngleDiff(playerid,{x=_x,y=_y,z=_z});
-                        -- Apply the absolute rotation to make player face the target
-                        Player:SetCameraRotTransformBy(playerid, {x = yaw, y = 4}, 1, 0.4);
-                        cameraFollow(t+1,target,playerid);
-                    end)
-                end
-            end 
-            cameraFollow(1,killer.attacker,playerid);
+            -- Repeated camera update
+            local function cameraFollow(playerid, target, ticks)
+                if ticks > 20 or not isOnRes[playerid] then return end
+
+                local r, tx, ty, tz = Player:getPosition(target)
+                local yaw, pitch = getAngleDiff(playerid, {x = tx, y = ty, z = tz})
+
+                Player:SetCameraRotTransformBy(playerid, {x = yaw, y = pitch}, 1, 0.4)
+
+                -- Schedule next update
+                threadpool:delay(0.5, function()
+                    cameraFollow(playerid, target, ticks + 1)
+                end)
+            end
+
+            -- Start following camera
+            cameraFollow(playerid, killer.attacker, 1)
 
             -- print("BATTLE_DATA : ",BATTLE_DATA);
             
@@ -158,7 +173,7 @@ ScriptSupportEvent:registerEvent("UI.Show",function(e)
         end 
     end 
 end)
-ScriptSupportEvent:registerEvent("UI.Show",function(e)
+ScriptSupportEvent:registerEvent("UI.Hide",function(e)
     local playerid = e.eventobjid;
     isOnRes[playerid] = false;
 end)
