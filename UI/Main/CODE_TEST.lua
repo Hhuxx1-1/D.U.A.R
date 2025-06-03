@@ -29,3 +29,29 @@ ScriptSupportEvent:registerEvent("Player.InputContent",function(e)
     end 
 
 end)
+
+-- helper function 
+-- function to check if table is empty
+function isEmptyTable(t)
+    for _ in pairs(t) do
+        return false
+    end
+    return true
+end
+-- function to check if table has value of 
+function table_has(tbl, value)
+    for _, v in ipairs(tbl) do
+        if v == value then
+            return true
+        end
+    end
+    return false
+end
+-- function to get length of pair table ;
+function table_length(t)
+    local count = 0
+    for _ in pairs(t) do
+        count = count + 1
+    end
+    return count;
+end 
