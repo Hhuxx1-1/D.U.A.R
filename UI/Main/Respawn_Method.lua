@@ -10,6 +10,7 @@ function CustomRespawnPlayer(playerid,x,z)
             threadpool:delay(2, function()
                 DIED[playerid] = true ; -- Turn it back On;
                 Player:setActionAttrState(playerid,1, true);
+                Player:setActionAttrState(playerid,64, true);
                 if Backpack:setGridItem(playerid, 8004, 12822, 1, 100) == ErrorCode.OK then
                     Actor:setFacePitch(playerid, 90)
                     threadpool:delay(5, function()

@@ -2,7 +2,7 @@ local uiid = "7510065272332163314";
 
 local killFeedUI = "7511519823136495858"
 local lastUpdateKillFeed = 0
-
+local isOnRes = {};
 local function updateKillFeed()
     local r, n, players = World:getAllPlayers(-1)
     if n > 0 then
@@ -47,13 +47,15 @@ ScriptSupportEvent:registerEvent("UI.Show",function(e)
     if Player:hideUIView(playerid,statusesUI) == 0 
     and Player:hideUIView(playerid,backpackUI) == 0 
     then 
-       BACKPACK.Clear(playerid);
+        isOnRes[playerid] = true;
+        BACKPACK.Clear(playerid);
         --    set plaer Location;
         local r, _x, _y, _z = Player:getPosition(playerid);
         if Player:setPosition(playerid, _x, 120, _z) == 0 
         then
             Player:setAttr(playerid,2,1); 
             Player:setActionAttrState(playerid,1, false);
+            Player:setActionAttrState(playerid,64, false);
             -- mount Camera original _x,_y,_z position;
             Player:SetCameraMountPos(playerid, {x=_x,y=_y+3,z=_z});
 
@@ -61,6 +63,7 @@ ScriptSupportEvent:registerEvent("UI.Show",function(e)
             _e("respawnButton",2):setAction(function()
                 Player:ResetCameraAttr(playerid)
                 Player:hideUIView(playerid,uiid);
+                threadpool:wait(1);
                 GIVE_PLAYER_LOADOUT(playerid)
             end)
             _e("changeButton",5):setAction(function()
@@ -98,9 +101,17 @@ ScriptSupportEvent:registerEvent("UI.Show",function(e)
                     diamond:gain(5,"Kill Player"..playerid);
                 end 
             end
-            threadpool:delay(1,function(e)
-                 Player:SetCameraMountObj(playerid, killer.attacker);
-            end)
+            local function cameraFollow(t)
+                if isOnRes[playerid] and t <= 20 then 
+                    threadpool:delay(0.3,function()
+                        -- Player:SetCameraMountObj(playerid, killer.attacker);
+                        local r, _x, _y, _z = Player:getPosition(killer.attacker);
+                        Player:SetCameraMountPos(playerid, {x=_x,y=_y+3,z=_z});
+                        cameraFollow(t+1);
+                    end)
+                end
+            end 
+            cameraFollow(1);
 
             -- print("BATTLE_DATA : ",BATTLE_DATA);
             
@@ -109,6 +120,10 @@ ScriptSupportEvent:registerEvent("UI.Show",function(e)
 
         end 
     end 
+end)
+ScriptSupportEvent:registerEvent("UI.Show",function(e)
+    local playerid = e.eventobjid;
+    isOnRes[playerid] = false;
 end)
 
 ScriptSupportEvent:registerEvent("UI.Button.Click",function(e)
