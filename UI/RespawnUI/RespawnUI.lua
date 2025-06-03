@@ -1,5 +1,44 @@
 local uiid = "7510065272332163314";
 
+local killFeedUI = "7511519823136495858"
+local lastUpdateKillFeed = 0
+
+local function updateKillFeed()
+    local r, n, players = World:getAllPlayers(-1)
+    if n > 0 then
+        -- Get only the last 5 messages from the killfeed
+        local total = #BATTLE_DATA.KILLFEED
+        local start = math.max(1, total - 4)
+        local recentMessages = {}
+        for i = start, total do
+            table.insert(recentMessages, BATTLE_DATA.KILLFEED[i])
+        end
+        local killfeedMSG = table.concat(recentMessages, "\n")
+
+        -- Timestamp this update
+        lastUpdateKillFeed = os.time()
+        local delay = 6
+
+        -- Update the UI for all players
+        for _, player in ipairs(players) do
+            local kfUI = UIZ(killFeedUI, player)
+            kfUI("text", 1):setText(killfeedMSG)
+            kfUI()
+        end
+
+        -- Clear the UI after delay (only if no newer updates happened)
+        threadpool:delay(delay, function()
+            if os.time() - lastUpdateKillFeed >= delay then
+                for _, player in ipairs(players) do
+                    local kfUI = UIZ(killFeedUI, player)
+                    kfUI("text", 1):setText("")
+                    kfUI()
+                end
+            end
+        end)
+    end
+end
+
 ScriptSupportEvent:registerEvent("UI.Show",function(e)
     local playerid = e.eventobjid;
     -- close statuses UI and backpack UI;
@@ -43,7 +82,9 @@ ScriptSupportEvent:registerEvent("UI.Show",function(e)
             local killer = BATTLE_DATA:GetKiller(playerid)
             if killer then
                 BATTLE_DATA.players[killer.attacker].kills = 
-                    BATTLE_DATA.players[killer.attacker].kills + 1
+                    BATTLE_DATA.players[killer.attacker].kills + 1;
+                -- update the killfeed text;
+                updateKillFeed()
             end
             threadpool:delay(1,function(e)
                  Player:SetCameraMountObj(playerid, killer.attacker);

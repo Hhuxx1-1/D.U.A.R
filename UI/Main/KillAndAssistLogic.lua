@@ -2,6 +2,7 @@
 BATTLE_DATA = {
     players = {}  -- Stores all battle data per player
 }
+BATTLE_DATA.KILLFEED = {} --stores current killfeed;
 
 -- Check if object is a player
 local function isPlayer(objid)
@@ -64,9 +65,9 @@ end
 -- Generate death recap message
 local function getDeathRecap(playerid)
     local killer = getKiller(playerid)
-    if not killer then return "💀 Died to unknown causes" end
+    if not killer then return "Died to unknown causes" end
     local attackerName = PLAYER_READY.PLAYERS[killer.attacker] ~= nil and PLAYER_READY.PLAYERS[killer.attacker].name or killer.attacker;
-    local msg = string.format("🔥 Killed by [%s] (%s) | %d DMG",
+    local msg = string.format("Killed by [%s] (%s) | %d DMG",
           attackerName, killer.weapon, killer.damage)
     
     -- Check for assists (other damagers)
@@ -83,9 +84,15 @@ local function getDeathRecap(playerid)
         msg = msg .. string.format("\n + Assisted by [Player%d] (%s) | %d DMG", 
               attackerId, weapon, damage)
     end
-    
+
+    -- add into killFeed
+    local victimName = PLAYER_READY.PLAYERS[playerid] ~= nil and PLAYER_READY.PLAYERS[playerid].name or playerid;
+    table.insert(BATTLE_DATA.KILLFEED,string.format("%s Kill %s with %s ",attackerName,victimName,killer.weapon));
+
     return msg
 end
+
+
 
 -- Clear combat data
 local function clearCombatData(playerid)
