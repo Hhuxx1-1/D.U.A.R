@@ -63,6 +63,7 @@ ScriptSupportEvent:registerEvent("UI.Show",function(e)
     if Player:hideUIView(playerid,statusesUI) == 0 
     and Player:hideUIView(playerid,backpackUI) == 0 
     then 
+        PLAYER_READY:UNREGISTER(playerid); -- remove from ready when dies;
         isOnRes[playerid] = true;
         BACKPACK.Clear(playerid);
         --    set plaer Location;
@@ -80,12 +81,12 @@ ScriptSupportEvent:registerEvent("UI.Show",function(e)
                 Player:ResetCameraAttr(playerid)
                 Player:hideUIView(playerid,uiid);
                 threadpool:wait(1);
+                PLAYER_READY:REGISTER(playerid); -- register it back when immediately Respawn;
                 GIVE_PLAYER_LOADOUT(playerid)
             end)
             _e("changeButton",5):setAction(function()
                 Player:ResetCameraAttr(playerid)
                 Player:hideUIView(playerid,uiid);
-                PLAYER_READY:UNREGISTER(playerid);
                 threadpool:wait(1);
                 Player:openUIView(playerid,"7508907770055956722");
                 Actor:addBuff(playerid,50000003,1, 1);
@@ -119,30 +120,18 @@ ScriptSupportEvent:registerEvent("UI.Show",function(e)
             end
 
             -- Calculate yaw (horizontal) and pitch (vertical) angle difference
-            local function getAngleDiff(playerid, target)
-                local _, px, py, pz = Actor:getPosition(playerid)
-                local _, dx, dy, dz = Player:getAimPos(playerid)
-                local tx, ty, tz = target.x, target.y, target.z
+            -- pitch calculation (look toward killer)
+            local function getYawPitchToTarget(from, to)
+                local dx = to.x - from.x
+                local dy = to.y - from.y
+                local dz = to.z - from.z
 
-                -- Vector from player to aim direction
-                local dirX, dirZ = dx - px, dz - pz
-                local aimMag = math.sqrt(dirX^2 + dirZ^2)
-                dirX, dirZ = dirX / aimMag, dirZ / aimMag
+                -- yaw: horizontal direction
+                local yaw = math.atan2(dx, dz) * (180 / math.pi)
 
-                -- Vector from player to target
-                local toTargetX, toTargetZ = tx - px, tz - pz
-                local targetMag = math.sqrt(toTargetX^2 + toTargetZ^2)
-                toTargetX, toTargetZ = toTargetX / targetMag, toTargetZ / targetMag
-
-                -- Yaw
-                local dot = toTargetX * dirX + toTargetZ * dirZ
-                local det = toTargetX * dirZ - toTargetZ * dirX
-                local yaw = math.atan2(det, dot) * (180 / math.pi)
-
-                -- Pitch: vertical angle between player and target
-                local dy = ty - py
-                local dz = math.sqrt((tx - px)^2 + (tz - pz)^2)
-                local pitch = math.atan2(dy, dz) * (180 / math.pi)
+                -- pitch: vertical tilt
+                local distXZ = math.sqrt(dx^2 + dz^2)
+                local pitch = -math.atan2(dy, distXZ) * (180 / math.pi)
 
                 return yaw, pitch
             end
@@ -152,9 +141,9 @@ ScriptSupportEvent:registerEvent("UI.Show",function(e)
                 if ticks > 20 or not isOnRes[playerid] then return end
 
                 local r, tx, ty, tz = Player:getPosition(target)
-                local yaw, pitch = getAngleDiff(playerid, {x = tx, y = ty, z = tz})
+                local yaw, pitch = getYawPitchToTarget({x=_x,y=_y,z=_z}, {x = tx, y = ty, z = tz})
 
-                Player:SetCameraRotTransformBy(playerid, {x = yaw, y = pitch}, 1, 0.4)
+                Player:SetCameraRotTransformTo(playerid, {x = yaw, y = pitch}, 1, 0.4)
 
                 -- Schedule next update
                 threadpool:delay(0.5, function()
