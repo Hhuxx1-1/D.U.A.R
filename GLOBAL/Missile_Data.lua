@@ -24,10 +24,13 @@ local error = MISSILE:REGISTER(12298)
     end)
 end)
 :SET_HIT(function(e)
+    threadpool:wait(1);
     local r, stringModel = Actor:getActorFacade(e.eventobjid);
     -- string model should start with either Block or block; 
-    if string.sub(stringModel,1, 5) ~= "Block" or string.sub(stringModel,1, 5) ~= "block" then
-        Actor:killSelf(e.eventobjid);
+    if r == 0 and stringModel then 
+        if string.sub(stringModel,1, 5) ~= "Block" or string.sub(stringModel,1, 5) ~= "block" then
+            Actor:killSelf(e.eventobjid);
+        end 
     end 
 end)
 ;
@@ -55,7 +58,7 @@ end)
 local error = MISSILE:REGISTER(4109)
 :SET_HIT(function(e)
     -- print("Hit Event : ",e);
-    MISSILE.f.ExplodeByRadius(e.x,e.y,e.z, 2, 200, 20, 1009, 10660, e.helperobjid);
+    MISSILE.f.ExplodeByRadius(e.x,e.y,e.z, 2.5, 200, 20, 1009, 10660, e.helperobjid);
     Actor:killSelf(e.eventobjid);
 end)
 :SET_CREATE(function(e)
@@ -120,7 +123,7 @@ local error = MISSILE:REGISTER(4120)
     if math.random() < 0.3 then 
     local r,posX,posY,posZ = Actor:getPosition(e.eventobjid);
         threadpool:delay(0.2,function()
-            MISSILE.f.ExplodeByRadius(posX,posY,posZ,  2.8, 250, 0, 1009, 10660, e.helperobjid);
+            MISSILE.f.ExplodeByRadius(posX,posY,posZ,  math.random(20,30)/10, math.random(20,30)*1.5, 0, 1009, 10660, e.helperobjid);
         end)
     end
     threadpool:delay(0.4,function()
@@ -171,8 +174,112 @@ end)
     threadpool:delay(0.4,function()
         local r,posX,posY,posZ = Actor:getPosition(e.toobjid);
         threadpool:delay(0.1,function()
-            MISSILE.f.ExplodeByRadius(posX,posY,posZ, 5, 600, 45, 1009, 10660, e.helperobjid);
+            MISSILE.f.ExplodeByRadius(posX,posY,posZ, 5, 500, 45, 1009, 10660, e.helperobjid);
         end)
+        Actor:killSelf(e.toobjid);
+    end)
+end)
+;
+
+-- Grenade Launcher projectile;
+local error = MISSILE:REGISTER(4124)
+:SET_HIT(function(e)
+    -- print(e);
+    local r,posX,posY,posZ = Actor:getPosition(e.eventobjid);
+    MISSILE.f.ExplodeByRadius(posX,posY,posZ,  math.random(4,6), 200, 45, 1009, 10660, e.helperobjid);
+    Actor:killSelf(e.eventobjid);
+end)
+:SET_CREATE(function(e)
+    Actor:playSoundEffectById(e.toobjid, 10637, 100, 1, false)
+    Actor:playBodyEffectById(e.toobjid,1194, 1)
+end)
+;
+
+-- Rail Gun projectile ;
+local error = MISSILE:REGISTER(4128)
+:SET_HIT(function(e)
+    -- print(e);
+    local r,posX,posY,posZ = Actor:getPosition(e.eventobjid);
+    local r,pX,pY,pZ = Actor:getPosition(e.helperobjid);
+    -- calculate the distance;
+    local distance = math.sqrt((pX-posX)^2+(pY-posY)^2+(pZ-posZ)^2);
+    threadpool:delay(0.3,function()
+        -- now the sniper mostly affected by distance;
+        MISSILE.f.ExplodeByRadius(posX,posY,posZ,  math.min(distance * 0.1,5), math.min(distance * 10,450), math.min(distance * 0.5,90), 1009, 10660, e.helperobjid);        
+    end)
+
+    threadpool:delay(0.6,function()
+        Actor:killSelf(e.eventobjid);
+    end)
+end)
+:SET_CREATE(function(e)
+    local r,x,y,z = Actor:getFaceDirection(e.helperobjid);
+	local size , color = 1.6 , 0xaa00ff;
+	local id = 1;
+	local info=Graphics:makeGraphicsLineToPos(e.x+x,e.y+y-1,e.z+z, size, color, id)
+	local offset , dir =  0 , {x=0,y=100,z=0}--Offset direction
+	Graphics:createGraphicsLineByActorToPos(e.toobjid, info, dir, offset)   
+    threadpool:delay(3,function()
+        Actor:killSelf(e.toobjid);
+    end)
+end)
+;
+
+-- Intermadieate Sniper projectile ;
+local error = MISSILE:REGISTER(4135)
+:SET_HIT(function(e)
+    -- print(e);
+    local r,posX,posY,posZ = Actor:getPosition(e.eventobjid);
+    local r,pX,pY,pZ = Actor:getPosition(e.helperobjid);
+    -- calculate the distance;
+    local distance = math.sqrt((pX-posX)^2+(pY-posY)^2+(pZ-posZ)^2);
+    threadpool:delay(0.3,function()
+        -- now the sniper mostly affected by distance;
+        MISSILE.f.ExplodeByRadius(posX,posY,posZ,  math.min(distance * 0.1,3.5), math.min(distance * 7,250), math.min(distance * 0.2,45), 1009, 10660, e.helperobjid);        
+    end)
+
+    threadpool:delay(0.6,function()
+        Actor:killSelf(e.eventobjid);
+    end)
+end)
+:SET_CREATE(function(e)
+    local r,x,y,z = Actor:getFaceDirection(e.helperobjid);
+	local size , color = 1.6 , 0xaa00ff;
+	local id = 1;
+	local info=Graphics:makeGraphicsLineToPos(e.x+x,e.y+y-1,e.z+z, size, color, id)
+	local offset , dir =  0 , {x=0,y=100,z=0}--Offset direction
+	Graphics:createGraphicsLineByActorToPos(e.toobjid, info, dir, offset)   
+    threadpool:delay(3,function()
+        Actor:killSelf(e.toobjid);
+    end)
+end)
+;
+
+-- Zap Gun projectile ;
+local error = MISSILE:REGISTER(4139)
+:SET_HIT(function(e)
+    -- print(e);
+    local r,posX,posY,posZ = Actor:getPosition(e.eventobjid);
+    local r,pX,pY,pZ = Actor:getPosition(e.helperobjid);
+    -- calculate the distance;
+    local distance = math.sqrt((pX-posX)^2+(pY-posY)^2+(pZ-posZ)^2);
+    threadpool:delay(0.3,function()
+        -- now the sniper mostly affected by distance;
+        MISSILE.f.ExplodeByRadius(posX,posY,posZ,  2.4, 250, 25, 1009, 10660, e.helperobjid);        
+    end)
+
+    threadpool:delay(0.6,function()
+        Actor:killSelf(e.eventobjid);
+    end)
+end)
+:SET_CREATE(function(e)
+    local r,x,y,z = Actor:getFaceDirection(e.helperobjid);
+	local size , color = 0.6 , 0xaaaaff;
+	local id = 1;
+	local info=Graphics:makeGraphicsLineToPos(e.x+x,e.y+y-1,e.z+z, size, color, id)
+	local offset , dir =  0 , {x=0,y=100,z=0}--Offset direction
+	Graphics:createGraphicsLineByActorToPos(e.toobjid, info, dir, offset)   
+    threadpool:delay(3,function()
         Actor:killSelf(e.toobjid);
     end)
 end)
