@@ -16,9 +16,9 @@ local function UpdateStamina(currentStamina,MaxStamina,playerid)
     local height = 60;
     local percentage = currentStamina/MaxStamina;
 
-    -- if currentStamina > 0 then 
-        setArmor(playerid,math.min(currentStamina+1,80))
-    -- end 
+    if currentStamina > 0 then 
+        setArmor(playerid,math.min(currentStamina+1,120))
+    end 
 
     local w = length * percentage;
     if Customui:SmoothScaleTo(playerid, uiid, Element_staminaMain, 0.1, w , height) == 0 then 
