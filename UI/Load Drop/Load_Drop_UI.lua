@@ -74,6 +74,10 @@ local function UpgradeLevelChar(playerid,ix,level)
     char:destroy();
 end
 
+function math_clamp(val, min, max)
+    return math.max(min, math.min(max, val))
+end
+
 local PLAYER_CURRENT_LOADOUT = {}
 function GIVE_PLAYER_LOADOUT(playerid)
     local d = PLAYER_CURRENT_LOADOUT[playerid];
@@ -87,7 +91,30 @@ function GIVE_PLAYER_LOADOUT(playerid)
 
     -- empty the BACKPACK;
     BACKPACK.Clear(playerid);
-    SPAWN_PLAYER(playerid,math.random(150,800),math.random(100,600));
+    -- Default random if no other players
+    local x, z = math.random(150, 800), math.random(100, 600)
+
+    -- If there are other ready players
+    print(PLAYER_READY.IPLAYER);
+    if #PLAYER_READY.IPLAYER > 1 then
+        local p = PLAYER_READY.IPLAYER[math.random(1, #PLAYER_READY.IPLAYER)]
+        local r, px,py,pz = Player:getPosition(p.id);
+        if r == 0 then 
+            -- Random angle and distance (e.g., 80–150 units away)
+            local angle = math.random() * 2 * math.pi
+            local distance = math.random(80, 150) -- don't spawn closer than 80
+    
+            local offsetX = math.cos(angle) * distance
+            local offsetZ = math.sin(angle) * distance
+    
+            x = math.floor(math_clamp(px + offsetX, 150, 800))
+            z = math.floor(math_clamp(pz + offsetZ, 100, 600))
+            else 
+                print("Couldn't locate player ",p);
+        end;
+    end
+
+    SPAWN_PLAYER(playerid,x,z);
     -- load the loadout;
     for i=1,3  do 
         local load = d.drop[i];
@@ -295,10 +322,17 @@ function UI.LoadIndexItem(playerid,ix)
         _e("btn_start",3):setAction(function()
             -- put player into ready
             Player:notifyGameInfo2Self(playerid,"Character is Locked");
+            -- play ads then if true; run this : 
+            PURCHASE:Request(playerid, 12001, "Unlock #Y"..d.name.."#n forever ?", function(e, pid)
+                UpgradeLevelChar(pid,ix,current_Char_level);
+                Player:notifyGameInfo2Self(playerid,"Unlocked "..d.name);
+                Actor:addBuff(playerid,50000004,1, 40);
+                UI.LoadIndexItem(playerid,ix)
+            end)
         end)
         _e("btn_upgrade_price",4):setAction(function(playerid)
             local price = price_next_level;
-            local coins = CURRENCY(d.cost.currency,playerid);
+            local coins = CURRENCY(d.unlockCost.currency,playerid);
             if coins:spend(price,"Unlock Character "..d.name.." to level "..(current_Char_level+1)) then
                 -- upgrade the saved data;
                 UpgradeLevelChar(playerid,ix,current_Char_level);
@@ -306,7 +340,7 @@ function UI.LoadIndexItem(playerid,ix)
                 Actor:addBuff(playerid,50000004,1, 40);
                 UI.LoadIndexItem(playerid,ix)
             else
-                Player:notifyGameInfo2Self(playerid,"Not Enough "..d.cost.currency)
+                Player:notifyGameInfo2Self(playerid,"Not Enough "..d.unlockCost.currency)
             end 
         end)
     end 
