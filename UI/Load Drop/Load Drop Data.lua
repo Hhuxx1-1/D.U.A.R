@@ -179,6 +179,7 @@ LOAD_DROP_DATA = {
               , iconid = "1004116"
               , quantity = 250
               , lvalue = 25
+              , desc = "Shoot Energy that can Explode"
             }
             ,
             [2] = {
@@ -187,6 +188,7 @@ LOAD_DROP_DATA = {
               , iconid = "1004110"
               , quantity = 1
               , lvalue = 1
+              , desc = "Summon Wall Around"
             }
             ,
             [3] = {
@@ -195,6 +197,7 @@ LOAD_DROP_DATA = {
               , iconid = "1004117"
               , quantity = 12
               , lvalue = 1
+              , desc = "Bouncy Energy that Explode High"
             }
         }
     },
@@ -207,7 +210,7 @@ LOAD_DROP_DATA = {
         unlockCost = {value = 10000 , currency = "Coins"},
         attr = {
                 hp = 200
-            ,   sp = 500
+            ,   sp = 250
             ,   lhp = 5
             ,   lsp = 5
         },
@@ -221,19 +224,19 @@ LOAD_DROP_DATA = {
             }
             ,
             [2] = {
-                itemid = 4099
-              , name = "Bomb"
-              , iconid = "1004099"
-              , quantity = 3
-              , lvalue = 1
+                itemid = 4122
+              , name = "Wall Lazard"
+              , iconid = "1004122"
+              , quantity = 10
+              , lvalue = 4
             }
             ,
             [3] = {
-                itemid = 4119
-              , name = "Explosive Sniper"
-              , iconid = "1004119"
-              , quantity = 1
-              , lvalue = 1
+                itemid = 4123
+              , name = "Grenade Launcher"
+              , iconid = "1004123"
+              , quantity = 36
+              , lvalue = 24
             }
         }
     },
@@ -243,35 +246,35 @@ LOAD_DROP_DATA = {
         icon = {"6000040"},
         skin = {[[skin_40]]},
         cost = {value = 90 , currency = "Coins" , grow = 1.1 },
-        unlockCost = {value = 10000 , currency = "Coins"},
+        unlockCost = {value = 20000 , currency = "Coins"},
         attr = {
                 hp = 200
-            ,   sp = 500
+            ,   sp = 250
             ,   lhp = 5
             ,   lsp = 5
         },
         drop = {
             [1] = {
-                itemid = 15014
-              , name = "AK Rifle"
-              , iconid = "1015014"
+                itemid = 15015
+              , name = "M14 Rifle"
+              , iconid = "1015015"
               , quantity = 256
-              , lvalue = 64
+              , lvalue = 32
             }
             ,
             [2] = {
-                itemid = 4099
-              , name = "Bomb"
-              , iconid = "1004099"
-              , quantity = 3
-              , lvalue = 1
+                itemid = 12006
+              , name = "Hook Shoot"
+              , iconid = "1012006"
+              , quantity = 12
+              , lvalue = 4
             }
             ,
             [3] = {
-                itemid = 4101
-              , name = "Rocket Launcer"
-              , iconid = "1004099"
-              , quantity = 1
+                itemid = 4119
+              , name = "Rail Sniper"
+              , iconid = "1004119"
+              , quantity = 12
               , lvalue = 1
             }
         }
@@ -282,36 +285,36 @@ LOAD_DROP_DATA = {
         icon = {"6000044"},
         skin = {[[skin_44]]},
         cost = {value = 200 , currency = "Coins" , grow = 1.2 },
-        unlockCost = {value = 500, currency = "Diamonds"},
+        unlockCost = {value = 250, currency = "Diamonds"},
         attr = {
                 hp = 200
-            ,   sp = 500
+            ,   sp = 250
             ,   lhp = 5
             ,   lsp = 5
         },
         drop = {
             [1] = {
-                itemid = 15014
-              , name = "AK Rifle"
-              , iconid = "1015014"
+                itemid = 15019
+              , name = "AUG Rifle"
+              , iconid = "1015019"
               , quantity = 256
               , lvalue = 64
             }
             ,
             [2] = {
-                itemid = 4099
-              , name = "Bomb"
-              , iconid = "1004099"
+                itemid = 4133
+              , name = "Drone"
+              , iconid = "1004133"
               , quantity = 3
               , lvalue = 1
             }
             ,
             [3] = {
-                itemid = 4101
-              , name = "Rocket Launcer"
-              , iconid = "1004099"
-              , quantity = 1
-              , lvalue = 1
+                itemid = 4134
+              , name = "Sniper Rifle"
+              , iconid = "1004134"
+              , quantity = 32
+              , lvalue = 12
             }
         }
     },
@@ -321,36 +324,36 @@ LOAD_DROP_DATA = {
         icon = {"6000048"},
         skin = {[[skin_48]]},
         cost = {value = 200 , currency = "Coins" , grow = 1.2 },
-        unlockCost = {value = 500, currency = "Diamonds"},
+        unlockCost = {value = 250, currency = "Diamonds"},
         attr = {
                 hp = 200
-            ,   sp = 500
+            ,   sp = 250
             ,   lhp = 5
             ,   lsp = 5
         },
         drop = {
             [1] = {
-                itemid = 15014
-              , name = "AK Rifle"
-              , iconid = "1015014"
+                itemid = 15017
+              , name = "Fire Rifle"
+              , iconid = "1015017"
               , quantity = 256
               , lvalue = 64
             }
             ,
             [2] = {
-                itemid = 4099
-              , name = "Bomb"
-              , iconid = "1004099"
-              , quantity = 3
-              , lvalue = 1
+                itemid = 4131
+              , name = "Fire Shotgun"
+              , iconid = "1004131"
+              , quantity = 58
+              , lvalue = 4
             }
             ,
             [3] = {
-                itemid = 4101
-              , name = "Rocket Launcer"
-              , iconid = "1004099"
-              , quantity = 1
-              , lvalue = 1
+                itemid = 4132
+              , name = "Fire Sniper"
+              , iconid = "1004132"
+              , quantity = 32
+              , lvalue = 2
             }
         }
     },
@@ -360,36 +363,36 @@ LOAD_DROP_DATA = {
         icon = {"6000049"},
         skin = {[[skin_49]]},
         cost = {value = 200 , currency = "Coins" , grow = 1.2 },
-        unlockCost = {value = 500, currency = "Diamonds"},
+        unlockCost = {value = 250, currency = "Diamonds"},
         attr = {
                 hp = 200
-            ,   sp = 500
+            ,   sp = 250
             ,   lhp = 5
             ,   lsp = 5
         },
         drop = {
             [1] = {
-                itemid = 15014
-              , name = "AK Rifle"
-              , iconid = "1015014"
+                itemid = 15018
+              , name = "Ice M4 Rifle"
+              , iconid = "1015018"
               , quantity = 256
               , lvalue = 64
             }
             ,
             [2] = {
-                itemid = 4099
-              , name = "Bomb"
-              , iconid = "1004099"
-              , quantity = 3
-              , lvalue = 1
+                itemid = 4138
+              , name = "Ice Wall"
+              , iconid = "1004138"
+              , quantity = 6
+              , lvalue = 3
             }
             ,
             [3] = {
-                itemid = 4101
-              , name = "Rocket Launcer"
-              , iconid = "1004099"
-              , quantity = 1
-              , lvalue = 1
+                itemid = 4137
+              , name = "Zap Rifle"
+              , iconid = "1004137"
+              , quantity = 350
+              , lvalue = 25
             }
         }
     },
@@ -402,33 +405,33 @@ LOAD_DROP_DATA = {
         unlockCost = {value = 50000, currency = "Coins"},
         attr = {
                 hp = 200
-            ,   sp = 500
+            ,   sp = 250
             ,   lhp = 5
             ,   lsp = 5
         },
         drop = {
             [1] = {
-                itemid = 15014
-              , name = "AK Rifle"
-              , iconid = "1015014"
+                itemid = 4125
+              , name = "Assault Rifle"
+              , iconid = "1004125"
               , quantity = 256
               , lvalue = 64
             }
             ,
             [2] = {
-                itemid = 4099
-              , name = "Bomb"
-              , iconid = "1004099"
-              , quantity = 3
-              , lvalue = 1
+                itemid = 12006
+              , name = "Hook Shoot"
+              , iconid = "1012006"
+              , quantity = 12
+              , lvalue = 4
             }
             ,
             [3] = {
-                itemid = 4101
-              , name = "Rocket Launcer"
-              , iconid = "1004099"
-              , quantity = 1
-              , lvalue = 1
+                itemid = 4136
+              , name = "Laser Blaster"
+              , iconid = "1004136"
+              , quantity = 25
+              , lvalue = 5
             }
         }
     },
@@ -441,7 +444,7 @@ LOAD_DROP_DATA = {
         unlockCost = {value = 50000, currency = "Coins"},
         attr = {
                 hp = 200
-            ,   sp = 500
+            ,   sp = 250
             ,   lhp = 5
             ,   lsp = 5
         },
@@ -455,32 +458,32 @@ LOAD_DROP_DATA = {
             }
             ,
             [2] = {
-                itemid = 4099
-              , name = "Bomb"
-              , iconid = "1004099"
-              , quantity = 3
-              , lvalue = 1
+                itemid = 12006
+              , name = "Hook Shoot"
+              , iconid = "1012006"
+              , quantity = 12
+              , lvalue = 6
             }
             ,
             [3] = {
-                itemid = 4101
-              , name = "Rocket Launcer"
-              , iconid = "1004099"
-              , quantity = 1
-              , lvalue = 1
+                itemid = 4127
+              , name = "Bazooka"
+              , iconid = "1004127"
+              , quantity = 32
+              , lvalue = 12
             }
         }
     },
     { 
         id = "13",
-        name = "Necromancer",
+        name = "Necro",
         icon = {"6000174","6000175"},
         skin = {[[skin_174]],[[skin_175]]},
         cost = {value = 200 , currency = "Coins" , grow = 1.2 },
         unlockCost = {value = 50000, currency = "Coins"},
         attr = {
                 hp = 200
-            ,   sp = 500
+            ,   sp = 250
             ,   lhp = 5
             ,   lsp = 5
         },
@@ -516,10 +519,10 @@ LOAD_DROP_DATA = {
         icon = {"6000278"},
         skin = {[[skin_278]]},
         cost = {value = 200 , currency = "Coins" , grow = 1.5 },
-        unlockCost = {value = 500, currency = "Diamonds"},
+        unlockCost = {value = 250, currency = "Diamonds"},
         attr = {
                 hp = 200
-            ,   sp = 500
+            ,   sp = 250
             ,   lhp = 5
             ,   lsp = 5
         },
@@ -555,10 +558,10 @@ LOAD_DROP_DATA = {
         icon = {"6000328"},
         skin = {[[skin_328]]},
         cost = {value = 200 , currency = "Coins" , grow = 1.5 },
-        unlockCost = {value = 500, currency = "Diamonds"},
+        unlockCost = {value = 250, currency = "Diamonds"},
         attr = {
                 hp = 200
-            ,   sp = 500
+            ,   sp = 250
             ,   lhp = 5
             ,   lsp = 5
         },
@@ -597,7 +600,7 @@ LOAD_DROP_DATA = {
         unlockCost = {value = 2000, currency = "Diamonds"},
         attr = {
                 hp = 200
-            ,   sp = 500
+            ,   sp = 250
             ,   lhp = 5
             ,   lsp = 5
         },
@@ -636,7 +639,7 @@ LOAD_DROP_DATA = {
         unlockCost = {value = 1500, currency = "Diamonds"},
         attr = {
                 hp = 200
-            ,   sp = 500
+            ,   sp = 250
             ,   lhp = 5
             ,   lsp = 5
         },
@@ -675,7 +678,7 @@ LOAD_DROP_DATA = {
         unlockCost = {value = 1500, currency = "Diamonds"},
         attr = {
                 hp = 200
-            ,   sp = 500
+            ,   sp = 250
             ,   lhp = 5
             ,   lsp = 5
         },
@@ -714,7 +717,7 @@ LOAD_DROP_DATA = {
         unlockCost = {value = 1500, currency = "Diamonds"},
         attr = {
                 hp = 200
-            ,   sp = 500
+            ,   sp = 250
             ,   lhp = 5
             ,   lsp = 5
         },
@@ -753,7 +756,7 @@ LOAD_DROP_DATA = {
         unlockCost = {value = 900, currency = "Diamonds"},
         attr = {
                 hp = 200
-            ,   sp = 500
+            ,   sp = 250
             ,   lhp = 5
             ,   lsp = 5
         },
@@ -792,7 +795,7 @@ LOAD_DROP_DATA = {
         unlockCost = {value = 900, currency = "Diamonds"},
         attr = {
                 hp = 200
-            ,   sp = 500
+            ,   sp = 250
             ,   lhp = 5
             ,   lsp = 5
         },
@@ -831,7 +834,7 @@ LOAD_DROP_DATA = {
         unlockCost = {value = 1200, currency = "Diamonds"},
         attr = {
                 hp = 200
-            ,   sp = 500
+            ,   sp = 250
             ,   lhp = 5
             ,   lsp = 5
         },
@@ -870,7 +873,7 @@ LOAD_DROP_DATA = {
         unlockCost = {value = 5000, currency = "Diamonds"},
         attr = {
                 hp = 200
-            ,   sp = 500
+            ,   sp = 250
             ,   lhp = 5
             ,   lsp = 5
         },
