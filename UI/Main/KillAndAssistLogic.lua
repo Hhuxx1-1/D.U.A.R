@@ -89,7 +89,7 @@ local function getDeathRecap(playerid)
     end
 
     -- add into killFeed
-    local victimName = PLAYER_READY.PLAYERS[playerid] ~= nil and PLAYER_READY.PLAYERS[playerid].name or playerid;
+    local r, victimName = Player:getNickname(playerid);victimName = victimName:gsub("@", "")
     table.insert(BATTLE_DATA.KILLFEED,{victimName = victimName , killerName = attackerName , weaponName = killer.weapon , weaponIcon = killer.weaponIcon});
 
     return msg
