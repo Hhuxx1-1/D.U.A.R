@@ -1,6 +1,6 @@
 UIZ = {}
 local UIZ_BUTTON_ACTION = {}
-local BUTTON_COOLDOWN_TICKS = 5  -- 5 ticks = 0.25 seconds (adjust as needed)
+local BUTTON_COOLDOWN_TICKS = 10  -- 5 ticks = 0.5 seconds (adjust as needed)
 local LAST_PRESS_TICK = {}         -- Stores last press tick per player-element combo
 
 -- Handle button press with tick-based anti-spam
