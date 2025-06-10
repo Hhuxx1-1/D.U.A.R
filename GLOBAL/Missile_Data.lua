@@ -1,3 +1,45 @@
+function MISSILE_SHOT_SPREAD(sourceObjId, projId, x, y, z, dirx, diry, dirz, speed, count, angleYawStep, anglePitchStep)
+    -- Get forward yaw and pitch from direction
+    local yaw = math.atan2(dirz, dirx)
+    local horizontalDist = math.sqrt(dirx * dirx + dirz * dirz)
+    local pitch = math.atan2(diry, horizontalDist)
+
+    local half = math.floor(count / 2)
+    for i = 0, count - 1 do
+        for j = 0, count - 1 do
+            local offsetYaw = i - half
+            local offsetPitch = j - half
+
+            local angleYaw = yaw + math.rad(offsetYaw * angleYawStep)
+            local anglePitch = pitch + math.rad(offsetPitch * anglePitchStep)
+
+            -- Convert spherical to direction vector
+            local spreadDirX = math.cos(anglePitch) * math.cos(angleYaw)
+            local spreadDirY = math.sin(anglePitch)
+            local spreadDirZ = math.cos(anglePitch) * math.sin(angleYaw)
+
+            World:spawnProjectileByDir(sourceObjId, projId, x, y, z, spreadDirX, spreadDirY, spreadDirZ, speed)
+        end
+    end
+end
+function MISSILE_SHOT_FAN(sourceObjId, projId, x, y, z, dirx, diry, dirz, speed, count, angleStep)
+    -- Convert direction to angle
+    local baseAngle = math.atan2(dirz, dirx)
+
+    -- Symmetrical spread: center, left-right alternation
+    local middle = math.floor(count / 2)
+
+    for i = 0, count - 1 do
+        local offset = i - middle
+        local angle = baseAngle + math.rad(offset * angleStep)
+
+        local spreadDirX = math.cos(angle)
+        local spreadDirZ = math.sin(angle)
+
+        World:spawnProjectileByDir(sourceObjId, projId, x, y, z, spreadDirX, diry, spreadDirZ, speed)
+    end
+end
+
 -- Bom;
 local error = MISSILE:REGISTER(4098)
 :SET_CREATE(function(e)
@@ -281,6 +323,54 @@ end)
 	Graphics:createGraphicsLineByActorToPos(e.toobjid, info, dir, offset)   
     threadpool:delay(3,function()
         Actor:killSelf(e.toobjid);
+    end)
+end)
+;
+
+-- HK RIFLE Gun projectile ;
+local error = MISSILE:REGISTER(4142)
+:SET_HIT(function(e)
+    -- print(e);
+    local r,posX,posY,posZ = Actor:getPosition(e.eventobjid);
+    local r,pX,pY,pZ = Actor:getPosition(e.helperobjid);
+    -- calculate the distance;
+    MISSILE.f.ExplodeByRadius(posX,posY,posZ,  2.4, 250, 25, 1009, 10660, e.helperobjid);        
+
+    threadpool:delay(0.6,function()
+        Actor:killSelf(e.eventobjid);
+    end)
+end)
+:SET_CREATE(function(e)
+    local r,x,y,z = Actor:getFaceDirection(e.helperobjid);
+	local size , color = 0.6 , 0xdd1100;
+	local id = 1;
+	local info=Graphics:makeGraphicsLineToPos(e.x+x,e.y+y-1,e.z+z, size, color, id)
+	local offset , dir =  0 , {x=0,y=100,z=0}--Offset direction
+	Graphics:createGraphicsLineByActorToPos(e.toobjid, info, dir, offset)   
+    threadpool:delay(3,function()
+        Actor:killSelf(e.toobjid);
+    end)
+end)
+;
+
+
+-- Missile Rpg;
+local error = MISSILE:REGISTER(4143)
+:SET_HIT(function(e)
+    -- print(e);
+    MISSILE.f.ExplodeByRadius(e.x,e.y,e.z,  math.random(4,6), 500, 45, 1009, 10660, e.helperobjid);
+    Actor:killSelf(e.eventobjid);
+end)
+:SET_CREATE(function(e)
+    Actor:playSoundEffectById(e.toobjid, 10637, 100, 1, false)
+    Actor:playBodyEffectById(e.toobjid,1194, 1);
+    local r,dirx,diry,dirz = Actor:getFaceDirection(e.helperobjid);
+    threadpool:delay(0.4,function()
+        local r,x,y,z = Actor:getPosition(e.toobjid)
+        if r == 0 then 
+            MISSILE_SHOT_FAN(e.helperobjid, 4102, x, y + 1, z, dirx, diry, dirz, 280, 3,15)
+            Actor:killSelf(e.toobjid);
+        end 
     end)
 end)
 ;

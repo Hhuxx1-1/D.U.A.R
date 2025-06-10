@@ -1,6 +1,5 @@
 -- version: 2022-04-20
 -- mini: 1029380338
--- uipacket: 7508907770055956722
 local uiid = "7508907770055956722";
 local current_page = {};
 local UI = {}
@@ -79,8 +78,11 @@ function math_clamp(val, min, max)
 end
 
 local PLAYER_CURRENT_LOADOUT = {}
+function GET_PLAYER_LOADOUT(playerid)
+    return PLAYER_CURRENT_LOADOUT[playerid]
+end
 function GIVE_PLAYER_LOADOUT(playerid)
-    local d = PLAYER_CURRENT_LOADOUT[playerid];
+    local d = GET_PLAYER_LOADOUT(playerid);
     -- print("GIVE_PLAYER_LOADOUT : ",d);
     -- set attribute 
     local hp,sp = d.attr.hp , d.attr.sp;
@@ -107,7 +109,7 @@ function GIVE_PLAYER_LOADOUT(playerid)
             local offsetX = math.cos(angle) * distance
             local offsetZ = math.sin(angle) * distance
     
-            x = math.floor(math_clamp(px + offsetX, 150, 800))
+            x = math.floor(math_clamp(px + offsetX, 150, 950))
             z = math.floor(math_clamp(pz + offsetZ, 100, 600))
             else 
                 print("Couldn't locate player ",p);
@@ -220,8 +222,8 @@ function UI.LoadDropCharLevel(d, level)
     local result = deepCopy(d)
     
     -- Modify the copy instead of the original
-    result.attr.hp = result.attr.hp + (result.attr.lhp * level)
-    result.attr.sp = result.attr.sp + (result.attr.lsp * level)  -- Fixed: was using hp instead of sp
+    result.attr.hp = math.min(result.attr.hp + (result.attr.lhp * level),600);
+    result.attr.sp = math.min(result.attr.sp + (result.attr.lsp * level),600);  -- Fixed: was using hp instead of sp
     result.drop[1].quantity = result.drop[1].quantity + (result.drop[1].lvalue * level)
     
     if level >= 5 then 
@@ -315,7 +317,16 @@ function UI.LoadIndexItem(playerid,ix)
                 Actor:addBuff(playerid,50000004,1, 40);
                 UI.LoadIndexItem(playerid,ix)
             else
-                Player:notifyGameInfo2Self(playerid,"Not Enough "..d.cost.currency)
+                Player:notifyGameInfo2Self(playerid,"Not Enough "..d.cost.currency);
+
+                PURCHASE:Request(playerid, 12004, "Instantly Upgrade #Y"..d.name.."#n ?", function(e, pid)
+                    if current_Char_level > 0 then 
+                        UpgradeLevelChar(pid,ix,current_Char_level);
+                        Player:notifyGameInfo2Self(playerid,"Upgraded "..d.name.." to level "..(current_Char_level+1));
+                        Actor:addBuff(playerid,50000004,1, 40);
+                        UI.LoadIndexItem(playerid,ix)
+                    end 
+                end)
             end 
         end)
     else
@@ -340,7 +351,14 @@ function UI.LoadIndexItem(playerid,ix)
                 Actor:addBuff(playerid,50000004,1, 40);
                 UI.LoadIndexItem(playerid,ix)
             else
-                Player:notifyGameInfo2Self(playerid,"Not Enough "..d.unlockCost.currency)
+                Player:notifyGameInfo2Self(playerid,"Not Enough "..d.unlockCost.currency);
+
+                PURCHASE:Request(playerid, 12001, "Unlock #Y"..d.name.."#n forever ?", function(e, pid)
+                    UpgradeLevelChar(pid,ix,current_Char_level);
+                    Player:notifyGameInfo2Self(playerid,"Unlocked "..d.name);
+                    Actor:addBuff(playerid,50000004,1, 40);
+                    UI.LoadIndexItem(playerid,ix)
+                end)
             end 
         end)
     end 

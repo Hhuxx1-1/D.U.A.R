@@ -98,7 +98,7 @@ LOAD_DROP_DATA = {
                 itemid = 4106
               , name = "Explosive Revolver"
               , iconid = "1004106"
-              , quantity = 36
+              , quantity = 64
               , lvalue = 12
             }
             ,
@@ -337,14 +337,14 @@ LOAD_DROP_DATA = {
               , name = "Fire Rifle"
               , iconid = "1015017"
               , quantity = 256
-              , lvalue = 64
+              , lvalue = 42
             }
             ,
             [2] = {
                 itemid = 4131
               , name = "Fire Shotgun"
               , iconid = "1004131"
-              , quantity = 58
+              , quantity = 38
               , lvalue = 4
             }
             ,
@@ -489,27 +489,27 @@ LOAD_DROP_DATA = {
         },
         drop = {
             [1] = {
-                itemid = 15014
-              , name = "AK Rifle"
-              , iconid = "1015014"
-              , quantity = 256
-              , lvalue = 64
+                itemid = 4141
+              , name = "HK Explosive Rifle"
+              , iconid = "1004141"
+              , quantity = 180
+              , lvalue = 30
             }
             ,
             [2] = {
-                itemid = 4099
-              , name = "Bomb"
-              , iconid = "1004099"
-              , quantity = 3
-              , lvalue = 1
+                itemid = 4144
+              , name = "Castler"
+              , iconid = "1004144"
+              , quantity = 4
+              , lvalue = 2
             }
             ,
             [3] = {
-                itemid = 4101
-              , name = "Rocket Launcer"
-              , iconid = "1004099"
-              , quantity = 1
-              , lvalue = 1
+                itemid = 4140
+              , name = "Multi Rocket"
+              , iconid = "1004140"
+              , quantity = 24
+              , lvalue = 4
             }
         }
     },
@@ -528,27 +528,27 @@ LOAD_DROP_DATA = {
         },
         drop = {
             [1] = {
-                itemid = 15014
-              , name = "AK Rifle"
-              , iconid = "1015014"
+                itemid = 4145
+              , name = "Dragon AK"
+              , iconid = "1004145"
               , quantity = 256
               , lvalue = 64
             }
             ,
             [2] = {
-                itemid = 4099
-              , name = "Bomb"
-              , iconid = "1004099"
-              , quantity = 3
+                itemid = 4146
+              , name = "High Wall"
+              , iconid = "1004146"
+              , quantity = 5
               , lvalue = 1
             }
             ,
             [3] = {
-                itemid = 4101
-              , name = "Rocket Launcer"
-              , iconid = "1004099"
-              , quantity = 1
-              , lvalue = 1
+                itemid = 4147
+              , name = "Grappling Hook"
+              , iconid = "1004147"
+              , quantity = 34
+              , lvalue = 10
             }
         }
     },
@@ -567,25 +567,25 @@ LOAD_DROP_DATA = {
         },
         drop = {
             [1] = {
-                itemid = 15014
-              , name = "AK Rifle"
-              , iconid = "1015014"
+                itemid = 4129
+              , name = "Red M4"
+              , iconid = "1004129"
               , quantity = 256
               , lvalue = 64
             }
             ,
             [2] = {
-                itemid = 4099
-              , name = "Bomb"
-              , iconid = "1004099"
+                itemid = 4147
+              , name = "Grappling Hook"
+              , iconid = "1004147"
               , quantity = 3
               , lvalue = 1
             }
             ,
             [3] = {
-                itemid = 4101
-              , name = "Rocket Launcer"
-              , iconid = "1004099"
+                itemid = 4140
+              , name = "Multi Rocket"
+              , iconid = "1004140"
               , quantity = 1
               , lvalue = 1
             }
@@ -606,27 +606,27 @@ LOAD_DROP_DATA = {
         },
         drop = {
             [1] = {
-                itemid = 15014
-              , name = "AK Rifle"
-              , iconid = "1015014"
-              , quantity = 256
-              , lvalue = 64
+                itemid = 4149
+              , name = "High Energy Gun"
+              , iconid = "1004149"
+              , quantity = 260
+              , lvalue = 26
             }
             ,
             [2] = {
-                itemid = 4099
-              , name = "Bomb"
-              , iconid = "1004099"
-              , quantity = 3
-              , lvalue = 1
+                itemid = 4148
+              , name = "Shield Boost"
+              , iconid = "1004148"
+              , quantity = 8
+              , lvalue = 2
             }
             ,
             [3] = {
-                itemid = 4101
-              , name = "Rocket Launcer"
-              , iconid = "1004099"
-              , quantity = 1
-              , lvalue = 1
+                itemid = 4150
+              , name = "Super Operator"
+              , iconid = "1004150"
+              , quantity = 12
+              , lvalue = 6
             }
         }
     },
@@ -645,27 +645,27 @@ LOAD_DROP_DATA = {
         },
         drop = {
             [1] = {
-                itemid = 15014
-              , name = "AK Rifle"
-              , iconid = "1015014"
+                itemid = 4151
+              , name = "Blaster"
+              , iconid = "1004151"
               , quantity = 256
               , lvalue = 64
             }
             ,
             [2] = {
-                itemid = 4099
-              , name = "Bomb"
-              , iconid = "1004099"
-              , quantity = 3
-              , lvalue = 1
+                itemid = 4147
+              , name = "Grappling Hook"
+              , iconid = "1004147"
+              , quantity = 24
+              , lvalue = 2
             }
             ,
             [3] = {
-                itemid = 4101
-              , name = "Rocket Launcer"
-              , iconid = "1004099"
-              , quantity = 1
-              , lvalue = 1
+                itemid = 4140
+              , name = "Multi Launcer"
+              , iconid = "1004140"
+              , quantity = 30
+              , lvalue = 2
             }
         }
     },
@@ -684,27 +684,27 @@ LOAD_DROP_DATA = {
         },
         drop = {
             [1] = {
-                itemid = 15014
-              , name = "AK Rifle"
-              , iconid = "1015014"
+                itemid = 4153
+              , name = "Genos"
+              , iconid = "1004151"
               , quantity = 256
               , lvalue = 64
             }
             ,
             [2] = {
-                itemid = 4099
-              , name = "Bomb"
-              , iconid = "1004099"
-              , quantity = 3
-              , lvalue = 1
+                itemid = 4147
+              , name = "Grappling Hook"
+              , iconid = "1004147"
+              , quantity = 24
+              , lvalue = 2
             }
             ,
             [3] = {
-                itemid = 4101
-              , name = "Rocket Launcer"
-              , iconid = "1004099"
-              , quantity = 1
-              , lvalue = 1
+                itemid = 4140
+              , name = "Multi Launcer"
+              , iconid = "1004140"
+              , quantity = 30
+              , lvalue = 2
             }
         }
     },
@@ -723,27 +723,27 @@ LOAD_DROP_DATA = {
         },
         drop = {
             [1] = {
-                itemid = 15014
-              , name = "AK Rifle"
-              , iconid = "1015014"
-              , quantity = 256
-              , lvalue = 64
+                itemid = 4153
+              , name = "Gattling Blast"
+              , iconid = "1004153"
+              , quantity = 560
+              , lvalue = 60
             }
             ,
             [2] = {
-                itemid = 4099
-              , name = "Bomb"
-              , iconid = "1004099"
-              , quantity = 3
-              , lvalue = 1
+                itemid = 4147
+              , name = "Grappling Hook"
+              , iconid = "1004147"
+              , quantity = 24
+              , lvalue = 2
             }
             ,
             [3] = {
-                itemid = 4101
-              , name = "Rocket Launcer"
-              , iconid = "1004099"
-              , quantity = 1
-              , lvalue = 1
+                itemid = 4154
+              , name = "Destroy Decomposer"
+              , iconid = "1004154"
+              , quantity = 52
+              , lvalue = 12
             }
         }
     },
@@ -762,27 +762,27 @@ LOAD_DROP_DATA = {
         },
         drop = {
             [1] = {
-                itemid = 15014
-              , name = "AK Rifle"
-              , iconid = "1015014"
-              , quantity = 256
+                itemid = 4155
+              , name = "Gattling Machine"
+              , iconid = "1004155"
+              , quantity = 520
               , lvalue = 64
             }
             ,
             [2] = {
-                itemid = 4099
-              , name = "Bomb"
-              , iconid = "1004099"
-              , quantity = 3
-              , lvalue = 1
+                itemid = 4147
+              , name = "Grappling Hook"
+              , iconid = "1004147"
+              , quantity = 24
+              , lvalue = 4
             }
             ,
             [3] = {
-                itemid = 4101
-              , name = "Rocket Launcer"
-              , iconid = "1004099"
-              , quantity = 1
-              , lvalue = 1
+                itemid = 4146
+              , name = "High Wall"
+              , iconid = "1004146"
+              , quantity = 12
+              , lvalue = 12
             }
         }
     },
@@ -801,27 +801,27 @@ LOAD_DROP_DATA = {
         },
         drop = {
             [1] = {
-                itemid = 15014
-              , name = "AK Rifle"
-              , iconid = "1015014"
+                itemid = 4156
+              , name = "Burst Gun"
+              , iconid = "1004156"
               , quantity = 256
               , lvalue = 64
             }
             ,
             [2] = {
-                itemid = 4099
-              , name = "Bomb"
-              , iconid = "1004099"
-              , quantity = 3
-              , lvalue = 1
+                itemid = 4147
+              , name = "Grappling Hook"
+              , iconid = "1004147"
+              , quantity = 24
+              , lvalue = 4
             }
             ,
             [3] = {
-                itemid = 4101
-              , name = "Rocket Launcer"
-              , iconid = "1004099"
-              , quantity = 1
-              , lvalue = 1
+                itemid = 4146
+              , name = "High Wall"
+              , iconid = "1004146"
+              , quantity = 12
+              , lvalue = 12
             }
         }
     },
@@ -840,27 +840,27 @@ LOAD_DROP_DATA = {
         },
         drop = {
             [1] = {
-                itemid = 15014
-              , name = "AK Rifle"
-              , iconid = "1015014"
+                itemid = 4157
+              , name = "Rainer"
+              , iconid = "1004157"
               , quantity = 256
               , lvalue = 64
             }
             ,
             [2] = {
-                itemid = 4099
-              , name = "Bomb"
-              , iconid = "1004099"
-              , quantity = 3
-              , lvalue = 1
+                itemid = 4147
+              , name = "Grappling Hook"
+              , iconid = "1004147"
+              , quantity = 24
+              , lvalue = 4
             }
             ,
             [3] = {
-                itemid = 4101
-              , name = "Rocket Launcer"
-              , iconid = "1004099"
-              , quantity = 1
-              , lvalue = 1
+                itemid = 4158
+              , name = "Downer"
+              , iconid = "1004158"
+              , quantity = 32
+              , lvalue = 12
             }
         }
     },
@@ -879,27 +879,27 @@ LOAD_DROP_DATA = {
         },
         drop = {
             [1] = {
-                itemid = 15014
-              , name = "AK Rifle"
-              , iconid = "1015014"
-              , quantity = 256
-              , lvalue = 64
+                itemid = 4153
+              , name = "Gattling Blast"
+              , iconid = "1004153"
+              , quantity = 560
+              , lvalue = 60
             }
             ,
-            [2] = {
-                itemid = 4099
-              , name = "Bomb"
-              , iconid = "1004099"
-              , quantity = 3
-              , lvalue = 1
+             [2] = {
+                itemid = 4147
+              , name = "Grappling Hook"
+              , iconid = "1004147"
+              , quantity = 24
+              , lvalue = 4
             }
             ,
             [3] = {
-                itemid = 4101
-              , name = "Rocket Launcer"
-              , iconid = "1004099"
-              , quantity = 1
-              , lvalue = 1
+                itemid = 4140
+              , name = "Multi Rocket"
+              , iconid = "1004140"
+              , quantity = 24
+              , lvalue = 4
             }
         }
     },

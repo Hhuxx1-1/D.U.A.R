@@ -266,6 +266,15 @@ function BACKPACK.getActualId(playerid)
     return false;
 end 
 
+function BACKPACK.getAllBackpack(playerid)
+    local contents = BACKPACK.GetContents(playerid)
+    if contents then
+        return true,contents;
+    end
+    return false;
+end 
+
+
 function BACKPACK.AutoEquip(playerid)
     local currentIndex = CURRENT_EQUIP_INDEX[playerid] or 1
     local contents = BACKPACK.GetContents(playerid)

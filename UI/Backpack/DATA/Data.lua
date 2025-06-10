@@ -1,3 +1,44 @@
+function MISSILE_SHOT_SPREAD(sourceObjId, projId, x, y, z, dirx, diry, dirz, speed, count, angleYawStep, anglePitchStep)
+    -- Get forward yaw and pitch from direction
+    local yaw = math.atan2(dirz, dirx)
+    local horizontalDist = math.sqrt(dirx * dirx + dirz * dirz)
+    local pitch = math.atan2(diry, horizontalDist)
+
+    local half = math.floor(count / 2)
+    for i = 0, count - 1 do
+        for j = 0, count - 1 do
+            local offsetYaw = i - half
+            local offsetPitch = j - half
+
+            local angleYaw = yaw + math.rad(offsetYaw * angleYawStep)
+            local anglePitch = pitch + math.rad(offsetPitch * anglePitchStep)
+
+            -- Convert spherical to direction vector
+            local spreadDirX = math.cos(anglePitch) * math.cos(angleYaw)
+            local spreadDirY = math.sin(anglePitch)
+            local spreadDirZ = math.cos(anglePitch) * math.sin(angleYaw)
+
+            World:spawnProjectileByDir(sourceObjId, projId, x, y, z, spreadDirX, spreadDirY, spreadDirZ, speed)
+        end
+    end
+end
+function MISSILE_SHOT_FAN(sourceObjId, projId, x, y, z, dirx, diry, dirz, speed, count, angleStep)
+    -- Convert direction to angle
+    local baseAngle = math.atan2(dirz, dirx)
+
+    -- Symmetrical spread: center, left-right alternation
+    local middle = math.floor(count / 2)
+
+    for i = 0, count - 1 do
+        local offset = i - middle
+        local angle = baseAngle + math.rad(offset * angleStep)
+
+        local spreadDirX = math.cos(angle)
+        local spreadDirZ = math.sin(angle)
+
+        World:spawnProjectileByDir(sourceObjId, projId, x, y, z, spreadDirX, diry, spreadDirZ, speed)
+    end
+end
 --[[ REGISTER USE ID 15014 AK]]
 CUSTOM_ACTION_REGISTER_USE(15014,function(playerid,itemid)
     BACKPACK.ConsumeIndex(playerid,CURRENT_EQUIP_INDEX[playerid],1);
@@ -138,3 +179,123 @@ end)
 CUSTOM_ACTION_REGISTER_USED(4133,function(playerid,itemid)
     BACKPACK.ConsumeIndex(playerid,CURRENT_EQUIP_INDEX[playerid],1);
 end);
+-- HK Explosive Rifle
+CUSTOM_ACTION_REGISTER_USE(4141,function(playerid,itemid)
+    BACKPACK.ConsumeIndex(playerid,CURRENT_EQUIP_INDEX[playerid],1);
+end)
+-- Castler;
+CUSTOM_ACTION_REGISTER_USED(4144,function(playerid,itemid)
+    local _, x, y, z = Player:getPosition(playerid)
+    local _, dirx, diry, dirz = Actor:getFaceDirection(playerid)
+
+    -- Place stairs first
+    WALL.STAIR(x + dirx * 3, y - 1, z + dirz * 3, dirx, diry, dirz, 6, 4, {edge=683, middleEdge=428, middle=422}, 428)
+
+    -- Then place the castle on top of the stairs
+    local stairTopX = x + dirx * 9  -- (3 offset + 6 stairs)
+    local stairTopY = y + 3         -- platformHeight
+    local stairTopZ = z + dirz * 9
+
+    WALL.CASTLE(
+        stairTopX, stairTopY, stairTopZ,
+        dirx, diry, dirz,
+        5,           -- radius
+        math.pi * 0.6, -- angleSpan
+        4,           -- wall height
+        2,           -- battlement height
+        3,           -- inner wall height
+        2,           -- gap interval for battlement
+        {edge=683, middleEdge=428, middle=422}
+    )
+    BACKPACK.ConsumeIndex(playerid,CURRENT_EQUIP_INDEX[playerid],1);
+end);
+-- Multi Rocket
+CUSTOM_ACTION_REGISTER_USE(4140,function(playerid,itemid)
+    BACKPACK.ConsumeIndex(playerid,CURRENT_EQUIP_INDEX[playerid],1);
+end)
+
+-- Dragon AK
+CUSTOM_ACTION_REGISTER_USE(4145,function(playerid,itemid)
+    BACKPACK.ConsumeIndex(playerid,CURRENT_EQUIP_INDEX[playerid],1);
+end)
+
+-- Wall High;
+CUSTOM_ACTION_REGISTER_USED(4146,function(playerid,itemid)
+    local _, x, y, z = Player:getPosition(playerid)
+    local _, dirx, diry, dirz = Actor:getFaceDirection(playerid)
+
+    -- Place stairs first
+    WALL.STAIR(x + dirx * 3, y - 1, z + dirz * 3, dirx, diry, dirz, 5, 4, {
+        edge=40, middleEdge=450, middle=200381
+    }, 200381)
+
+    -- Then place the castle on top of the stairs
+    local stairTopX = x + dirx * 6  -- (3 offset + 6 stairs)
+    local stairTopY = y 
+    local stairTopZ = z + dirz * 6
+
+    WALL.CASTLE(
+        stairTopX, stairTopY, stairTopZ,
+        dirx, diry, dirz,
+        5,           -- radius
+        math.pi * 0.6, -- angleSpan
+        6,           -- wall height
+        2,           -- battlement height
+        3,           -- inner wall height
+        2,           -- gap interval for battlement
+        {edge=40, middleEdge=450, middle=1107}
+    )
+    BACKPACK.ConsumeIndex(playerid,CURRENT_EQUIP_INDEX[playerid],1);
+end);
+
+-- Grappling Hook
+CUSTOM_ACTION_REGISTER_USE(4147,function(playerid,itemid)
+    BACKPACK.ConsumeIndex(playerid,CURRENT_EQUIP_INDEX[playerid],1);
+    Actor:appendSpeed(playerid,0,0.5,0);
+    local r , x,y,z =Player:getPosition(playerid);
+    local _, dirx, diry, dirz = Actor:getFaceDirection(playerid);
+    World:spawnProjectileByDir(playerid, 12006, x, y+1, z, dirx , diry +0.05, dirz , 1200);
+    World:spawnProjectileByDir(playerid, 12006, x, y+1, z, dirx , diry -0.05, dirz , 1200);
+end)
+-- High Energy Gun
+CUSTOM_ACTION_REGISTER_USE(4149,function(playerid,itemid)
+    BACKPACK.ConsumeIndex(playerid,CURRENT_EQUIP_INDEX[playerid],1);
+end)
+
+-- Shield Boost 
+CUSTOM_ACTION_REGISTER_USED(4148,function(playerid,itemid)
+    BACKPACK.ConsumeIndex(playerid,CURRENT_EQUIP_INDEX[playerid],1);
+    local _, x, y, z = Player:getPosition(playerid)
+    local _, dirx, diry, dirz = Actor:getFaceDirection(playerid)
+
+    -- Place stairs first
+    WALL.STAIR(x + dirx * 3, y - 1, z + dirz * 3, dirx, diry, dirz, 5, 4, {
+        edge=449, middleEdge=410, middle=449
+    }, 449)
+
+    -- Then place the castle on top of the stairs
+    local stairTopX = x + dirx * 6  -- (3 offset + 6 stairs)
+    local stairTopY = y 
+    local stairTopZ = z + dirz * 6
+
+    WALL.CASTLE(
+        stairTopX, stairTopY, stairTopZ,
+        dirx, diry, dirz,
+        5,           -- radius
+        math.pi * 0.6, -- angleSpan
+        6,           -- wall height
+        2,           -- battlement height
+        3,           -- inner wall height
+        2,           -- gap interval for battlement
+        {edge=550, middleEdge=410, middle=449}
+    )
+    BACKPACK.ConsumeIndex(playerid,CURRENT_EQUIP_INDEX[playerid],1);
+end)
+
+-- Super Operator 
+CUSTOM_ACTION_REGISTER_USE(4150,function(playerid,itemid)
+    BACKPACK.ConsumeIndex(playerid,CURRENT_EQUIP_INDEX[playerid],1);
+    local r,x,y,z = Player:getPosition(playerid);
+    local r,dirx,diry,dirz = Player:getFaceDirection(playerid);
+    MISSILE_SHOT_FAN(playerid,4128,x+(dirx*2),y+1.5,z+(dirz*2),dirx,diry,dirz,600,2,5);
+end)

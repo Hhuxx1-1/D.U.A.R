@@ -24,7 +24,7 @@ local function UpdateStamina(currentStamina,MaxStamina,playerid)
     if Customui:SmoothScaleTo(playerid, uiid, Element_staminaMain, 0.1, w , height) == 0 then 
         LastStaminaUpdate[playerid] = os.time();
         
-        local delay = 3;
+        local delay = 2;
 
         -- Update the Inner Sub Bar; 
         threadpool:delay(delay,function()
@@ -84,7 +84,7 @@ ScriptSupportEvent:registerEvent([[Player.BeHurt]],function(e)
     if currentStamina >  maxStamina/2 then 
         -- substract it;
         local r,armor = Player:getAttr(playerid,19)
-        Player:setAttr(playerid,28,math.max(currentStamina + (dmg - armor) ,0));
+        Player:setAttr(playerid,28,math.max(currentStamina + (math.max(dmg - armor,-40)) ,0));
         Player:setAttr(playerid,2,math.min(currentHP - dmg/10,maxHP))
         Actor:addBuff(playerid,50000002, 1, 20);
     elseif currentStamina >  1 then 
